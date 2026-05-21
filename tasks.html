@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ProjectFlow - Tasks Board</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=Public+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error-container": "#93000a",
+                        "background": "#faf8ff",
+                        "surface-container-high": "#e7e7f3",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "surface-variant": "#e1e2ed",
+                        "outline-variant": "#c3c6d7",
+                        "on-secondary-fixed": "#00174b",
+                        "error-container": "#ffdad6",
+                        "surface-container": "#ededf9",
+                        "on-background": "#191b23",
+                        "primary-fixed": "#dbe1ff",
+                        "on-primary-container": "#eeefff",
+                        "inverse-primary": "#b4c5ff",
+                        "surface-container-highest": "#e1e2ed",
+                        "surface-dim": "#d9d9e5",
+                        "on-tertiary-fixed": "#360f00",
+                        "inverse-on-surface": "#f0f0fb",
+                        "tertiary-fixed": "#ffdbcd",
+                        "primary-container": "#2563eb",
+                        "error": "#ba1a1a",
+                        "secondary-container": "#acbfff",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed": "#dbe1ff",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "outline": "#737686",
+                        "inverse-surface": "#2e3039",
+                        "surface-tint": "#0053db",
+                        "surface-container-low": "#f3f3fe",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "on-secondary-container": "#394c84",
+                        "on-error": "#ffffff",
+                        "tertiary-container": "#bc4800",
+                        "secondary": "#495c95",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface": "#191b23",
+                        "on-secondary-fixed-variant": "#31447b",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "secondary-fixed-dim": "#b4c5ff",
+                        "tertiary": "#943700",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "on-tertiary-container": "#ffede6",
+                        "on-primary-fixed": "#00174b",
+                        "on-surface-variant": "#434655",
+                        "surface-bright": "#faf8ff",
+                        "surface": "#faf8ff",
+                        "primary": "#004ac6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {},
+                    "fontFamily": {
+                        "headline": ["Inter"],
+                        "display": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Public Sans"]
+                    },
+                    "fontSize": {}
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body antialiased flex h-screen overflow-hidden">
+<!-- SideNavBar -->
+<nav class="bg-surface-container-low dark:bg-surface-container-highest border-r border-outline-variant dark:border-outline docked left-0 h-screen w-64 flex flex-col hidden md:flex flex-shrink-0">
+<div class="p-4 flex items-center gap-3 mb-4">
+<div class="w-10 h-10 rounded-lg bg-primary-container text-on-primary-container flex items-center justify-center font-bold text-lg">
+                P
+            </div>
+<div>
+<h1 class="text-lg font-headline font-bold text-primary dark:text-inverse-primary">ProjectFlow</h1>
+<p class="text-xs text-on-surface-variant">Enterprise Admin</p>
+</div>
+</div>
+<div class="flex flex-col h-full p-4 gap-2 overflow-y-auto">
+<a class="text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-dim rounded-lg flex items-center px-4 py-2 hover:bg-surface-container-high dark:hover:bg-surface-dim transition-all duration-200 active:scale-[0.98] transition-transform" href="#">
+<span class="material-symbols-outlined mr-3 text-lg">dashboard</span>
+<span class="font-body text-sm font-medium text-primary dark:text-inverse-primary">Dashboard</span>
+</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-dim rounded-lg flex items-center px-4 py-2 hover:bg-surface-container-high dark:hover:bg-surface-dim transition-all duration-200 active:scale-[0.98] transition-transform" href="#">
+<span class="material-symbols-outlined mr-3 text-lg">folder</span>
+<span class="font-body text-sm font-medium text-primary dark:text-inverse-primary">Projects</span>
+</a>
+<a class="bg-primary-container dark:bg-primary text-on-primary-container dark:text-on-primary rounded-lg flex items-center px-4 py-2 hover:bg-surface-container-high dark:hover:bg-surface-dim transition-all duration-200 active:scale-[0.98] transition-transform" href="#">
+<span class="material-symbols-outlined mr-3 text-lg" style="font-variation-settings: 'FILL' 1;">assignment</span>
+<span class="font-body text-sm font-medium text-primary dark:text-inverse-primary">Tasks</span>
+</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-dim rounded-lg flex items-center px-4 py-2 hover:bg-surface-container-high dark:hover:bg-surface-dim transition-all duration-200 active:scale-[0.98] transition-transform" href="#">
+<span class="material-symbols-outlined mr-3 text-lg">group</span>
+<span class="font-body text-sm font-medium text-primary dark:text-inverse-primary">Team</span>
+</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-dim rounded-lg flex items-center px-4 py-2 hover:bg-surface-container-high dark:hover:bg-surface-dim transition-all duration-200 active:scale-[0.98] transition-transform" href="#">
+<span class="material-symbols-outlined mr-3 text-lg">analytics</span>
+<span class="font-body text-sm font-medium text-primary dark:text-inverse-primary">Reporting</span>
+</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-dim rounded-lg flex items-center px-4 py-2 hover:bg-surface-container-high dark:hover:bg-surface-dim transition-all duration-200 active:scale-[0.98] transition-transform mt-auto" href="#">
+<span class="material-symbols-outlined mr-3 text-lg">settings</span>
+<span class="font-body text-sm font-medium text-primary dark:text-inverse-primary">Settings</span>
+</a>
+</div>
+<div class="p-4 mt-auto">
+<button class="w-full bg-primary text-on-primary rounded-full py-2 px-6 font-medium text-sm hover:opacity-90 transition-opacity active:scale-[0.98]">
+                Create New Task
+            </button>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col w-full min-w-0 bg-background">
+<!-- TopNavBar -->
+<header class="bg-surface dark:bg-inverse-surface border-b border-outline-variant dark:border-outline shadow-sm dark:shadow-none docked full-width top-0 z-50 h-16 flex justify-between items-center w-full px-6 max-w-full flex-shrink-0 md:hidden">
+<!-- Mobile TopNav (Simplified for mobile context if SideNav is hidden) -->
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<span class="text-xl font-headline font-black text-on-surface dark:text-inverse-on-surface">ProjectFlow</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:text-primary dark:hover:text-inverse-primary transition-colors duration-200 active:opacity-80 transition-opacity">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center">
+<span class="text-xs font-medium">JD</span>
+</div>
+</div>
+</header>
+<!-- Desktop Header Area (for Context) -->
+<div class="hidden md:flex justify-between items-center p-8 pb-4 flex-shrink-0">
+<div>
+<h2 class="text-2xl font-headline font-bold text-on-surface">Tasks Board</h2>
+<p class="text-sm text-on-surface-variant mt-1">Manage and track your ongoing work items.</p>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary border-none w-64 text-on-surface" placeholder="Search tasks..." type="text"/>
+</div>
+<div class="flex gap-2">
+<button class="w-10 h-10 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+<button class="w-10 h-10 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Kanban Board Container -->
+<div class="flex-1 overflow-x-auto overflow-y-hidden p-6 md:px-8 md:pb-8 pt-4">
+<div class="flex gap-6 h-full items-start min-w-max">
+<!-- To Do Column -->
+<div class="w-80 flex flex-col bg-surface-container-low rounded-xl border border-outline-variant/50 max-h-full">
+<div class="p-4 border-b border-outline-variant/30 flex justify-between items-center flex-shrink-0">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-outline"></span>
+<h3 class="font-semibold text-on-surface">To Do</h3>
+<span class="text-xs bg-surface-variant text-on-surface-variant px-2 py-0.5 rounded-full ml-1">4</span>
+</div>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+<div class="p-3 overflow-y-auto flex flex-col gap-3 custom-scrollbar flex-1">
+<!-- Task Card 1 -->
+<div class="bg-surface rounded-lg p-4 border border-outline-variant/40 shadow-sm hover:shadow-md transition-shadow cursor-pointer group">
+<div class="flex justify-between items-start mb-2">
+<span class="text-[10px] font-bold uppercase tracking-wider text-secondary px-2 py-1 bg-secondary-container/30 rounded">Backend</span>
+<button class="opacity-0 group-hover:opacity-100 text-on-surface-variant transition-opacity">
+<span class="material-symbols-outlined text-sm">more_horiz</span>
+</button>
+</div>
+<h4 class="font-medium text-sm text-on-surface leading-snug mb-3">Update API Documentation for Auth endpoints</h4>
+<div class="flex justify-between items-center mt-auto">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-outline text-sm">chat_bubble</span>
+<span class="text-xs text-on-surface-variant">2</span>
+<span class="material-symbols-outlined text-outline text-sm ml-1">attachment</span>
+<span class="text-xs text-on-surface-variant">1</span>
+</div>
+<div class="w-6 h-6 rounded-full bg-primary-container text-on-primary-container text-xs flex items-center justify-center font-medium border border-surface">
+                                    JD
+                                </div>
+</div>
+</div>
+<!-- Task Card 2 -->
+<div class="bg-surface rounded-lg p-4 border border-outline-variant/40 shadow-sm hover:shadow-md transition-shadow cursor-pointer group">
+<div class="flex justify-between items-start mb-2">
+<span class="text-[10px] font-bold uppercase tracking-wider text-error px-2 py-1 bg-error-container/50 rounded">Bug</span>
+</div>
+<h4 class="font-medium text-sm text-on-surface leading-snug mb-3">Fix timezone offset issue in reporting dashboard</h4>
+<div class="flex justify-between items-center mt-auto">
+<div class="flex items-center gap-2">
+</div>
+<div class="w-6 h-6 rounded-full bg-tertiary-container text-on-tertiary-container text-xs flex items-center justify-center font-medium border border-surface">
+                                    AS
+                                </div>
+</div>
+</div>
+</div>
+</div>
+<!-- In Progress Column -->
+<div class="w-80 flex flex-col bg-surface-container-low rounded-xl border border-outline-variant/50 max-h-full">
+<div class="p-4 border-b border-outline-variant/30 flex justify-between items-center flex-shrink-0">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<h3 class="font-semibold text-on-surface">In Progress</h3>
+<span class="text-xs bg-surface-variant text-on-surface-variant px-2 py-0.5 rounded-full ml-1">2</span>
+</div>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+<div class="p-3 overflow-y-auto flex flex-col gap-3 custom-scrollbar flex-1">
+<!-- Task Card 3 -->
+<div class="bg-surface rounded-lg p-4 border border-primary/30 shadow-sm hover:shadow-md transition-shadow cursor-pointer group">
+<div class="flex justify-between items-start mb-2">
+<span class="text-[10px] font-bold uppercase tracking-wider text-tertiary px-2 py-1 bg-tertiary-container/20 rounded">Frontend</span>
+</div>
+<h4 class="font-medium text-sm text-on-surface leading-snug mb-3">Refactor Auth Logic for new SSO integration</h4>
+<div class="flex justify-between items-center mt-auto">
+<div class="flex items-center gap-2">
+<div class="flex items-center gap-1 text-primary text-xs font-medium bg-primary-fixed/50 px-2 py-0.5 rounded">
+<span class="material-symbols-outlined text-[12px]">schedule</span>
+                                        Today
+                                    </div>
+</div>
+<div class="w-6 h-6 rounded-full bg-secondary-container text-on-secondary-container text-xs flex items-center justify-center font-medium border border-surface">
+                                    MK
+                                </div>
+</div>
+</div>
+</div>
+</div>
+<!-- Review Column -->
+<div class="w-80 flex flex-col bg-surface-container-low rounded-xl border border-outline-variant/50 max-h-full">
+<div class="p-4 border-b border-outline-variant/30 flex justify-between items-center flex-shrink-0">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<h3 class="font-semibold text-on-surface">Review</h3>
+<span class="text-xs bg-surface-variant text-on-surface-variant px-2 py-0.5 rounded-full ml-1">1</span>
+</div>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+<div class="p-3 overflow-y-auto flex flex-col gap-3 custom-scrollbar flex-1">
+<!-- Task Card 4 -->
+<div class="bg-surface rounded-lg p-4 border border-outline-variant/40 shadow-sm hover:shadow-md transition-shadow cursor-pointer group">
+<div class="flex justify-between items-start mb-2">
+<span class="text-[10px] font-bold uppercase tracking-wider text-secondary px-2 py-1 bg-secondary-container/30 rounded">Design</span>
+</div>
+<h4 class="font-medium text-sm text-on-surface leading-snug mb-3">Design System update for Q3</h4>
+<div class="flex justify-between items-center mt-auto">
+<div class="flex items-center gap-2">
+</div>
+<div class="w-6 h-6 rounded-full bg-primary-container text-on-primary-container text-xs flex items-center justify-center font-medium border border-surface">
+                                    JD
+                                </div>
+</div>
+</div>
+</div>
+</div>
+<!-- Done Column -->
+<div class="w-80 flex flex-col bg-surface-container-low/50 rounded-xl border border-outline-variant/30 max-h-full opacity-80">
+<div class="p-4 border-b border-outline-variant/30 flex justify-between items-center flex-shrink-0">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-outline-variant"></span>
+<h3 class="font-semibold text-on-surface-variant">Done</h3>
+<span class="text-xs bg-surface-variant text-on-surface-variant px-2 py-0.5 rounded-full ml-1">12</span>
+</div>
+</div>
+<div class="p-3 overflow-y-auto flex flex-col gap-3 custom-scrollbar flex-1">
+<!-- Task Card 5 -->
+<div class="bg-surface/50 rounded-lg p-4 border border-outline-variant/20 shadow-sm">
+<h4 class="font-medium text-sm text-on-surface-variant leading-snug mb-3 line-through">Implement Dark Mode toggle</h4>
+<div class="flex justify-end mt-auto">
+<div class="w-6 h-6 rounded-full bg-surface-variant text-on-surface-variant text-xs flex items-center justify-center font-medium border border-surface">
+                                    RB
+                                </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: theme('colors.outline-variant');
+            border-radius: 10px;
+        }
+    </style>
+</body></html>
