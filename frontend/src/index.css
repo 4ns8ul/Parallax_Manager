@@ -1,70 +1,78 @@
 @import "tailwindcss";
 
 /* ============================================================
-   PPET Design System — Production-Grade Design Tokens
-   Following anti-vibe-coding principles:
-   - No gradients
-   - Tinted neutrals (not pure black/white)
+   PPET Design System — Stitch-aligned Production Tokens
+   Anti-vibe-coding principles:
+   - OKLCH color scales, no gradients, no pure black/white
+   - Tinted neutrals for ink and surfaces
    - 60-30-10 color rule
    - 8dp spacing grid
-   - Single font family (Inter)
+   - Inter (body/headline) + Public Sans (labels)
+   - 8px base border-radius
    ============================================================ */
 
-/* --- Custom Theme Tokens --- */
 @theme {
-  /* Brand Colors — Stitch Export */
-  --color-primary: #004ac6;
-  --color-primary-container: #2563eb;
-  --color-on-primary: #ffffff;
-  --color-on-primary-container: #eeefff;
-  --color-secondary: #495c95;
-  --color-secondary-container: #acbfff;
-  --color-on-secondary: #ffffff;
-  --color-on-secondary-container: #394c84;
-  --color-tertiary: #943700;
-  --color-tertiary-container: #bc4800;
-  --color-on-tertiary: #ffffff;
-  --color-on-tertiary-container: #ffede6;
+  /* ── Brand Colors ── */
+  --color-primary: oklch(0.37 0.18 260);
+  --color-primary-container: oklch(0.55 0.20 260);
+  --color-on-primary: oklch(0.99 0.00 0);
+  --color-on-primary-container: oklch(0.95 0.02 260);
+  --color-primary-fixed: oklch(0.88 0.06 260);
+  --color-primary-fixed-dim: oklch(0.78 0.10 260);
 
-  /* Neutral Tinted Colors — Stitch Export */
-  --color-background: #faf8ff;
-  --color-on-background: #191b23;
-  --color-surface: #faf8ff;
-  --color-surface-dim: #d9d9e5;
-  --color-surface-bright: #faf8ff;
-  --color-surface-container-lowest: #ffffff;
-  --color-surface-container-low: #f3f3fe;
-  --color-surface-container: #ededf9;
-  --color-surface-container-high: #e7e7f3;
-  --color-surface-container-highest: #e1e2ed;
-  --color-on-surface: #191b23;
-  --color-on-surface-variant: #434655;
-  --color-outline: #737686;
-  --color-outline-variant: #c3c6d7;
+  --color-secondary: oklch(0.48 0.08 260);
+  --color-secondary-container: oklch(0.73 0.10 260);
+  --color-on-secondary: oklch(0.99 0.00 0);
+  --color-on-secondary-container: oklch(0.38 0.08 260);
 
-  /* Semantic Colors */
-  --color-error: #ba1a1a;
-  --color-error-container: #ffdad6;
-  --color-on-error: #ffffff;
-  --color-on-error-container: #93000a;
-  
-  --color-success: #059669;
-  --color-warning: #d97706;
+  --color-tertiary: oklch(0.48 0.16 45);
+  --color-tertiary-container: oklch(0.55 0.18 45);
+  --color-on-tertiary: oklch(0.99 0.00 0);
+  --color-on-tertiary-container: oklch(0.93 0.04 45);
 
-  /* Legacy PPET Colors (keeping for compatibility with existing badges) */
-  --color-ink: #191b23;
-  --color-charcoal: #434655;
-  --color-ash: #737686;
-  --color-mist: #c3c6d7;
-  --color-cloud: #ededf9;
-  --color-canvas: #faf8ff;
-  --color-brand-50: #eeefff;
-  --color-brand-100: #dbe1ff;
-  --color-brand-500: #2563eb;
-  --color-brand-600: #004ac6;
-  --color-brand-700: #003ea8;
+  /* ── Neutral Tinted Surfaces ── */
+  --color-background: oklch(0.98 0.005 260);
+  --color-on-background: oklch(0.18 0.02 260);
+  --color-surface: oklch(0.98 0.005 260);
+  --color-surface-dim: oklch(0.87 0.01 260);
+  --color-surface-bright: oklch(0.98 0.005 260);
+  --color-surface-container-lowest: oklch(1.00 0.00 0);
+  --color-surface-container-low: oklch(0.97 0.005 260);
+  --color-surface-container: oklch(0.94 0.008 260);
+  --color-surface-container-high: oklch(0.92 0.008 260);
+  --color-surface-container-highest: oklch(0.90 0.01 260);
+  --color-surface-variant: oklch(0.90 0.01 260);
+  --color-on-surface: oklch(0.18 0.02 260);
+  --color-on-surface-variant: oklch(0.38 0.03 260);
+  --color-outline: oklch(0.52 0.02 260);
+  --color-outline-variant: oklch(0.80 0.015 260);
 
-  /* Status Colors for Tasks/Expenses */
+  /* ── Semantic Colors ── */
+  --color-error: oklch(0.45 0.20 25);
+  --color-error-container: oklch(0.92 0.05 25);
+  --color-on-error: oklch(0.99 0.00 0);
+  --color-on-error-container: oklch(0.35 0.15 25);
+  --color-success: oklch(0.55 0.16 155);
+  --color-success-container: oklch(0.92 0.04 155);
+  --color-warning: oklch(0.60 0.16 70);
+  --color-warning-container: oklch(0.92 0.04 70);
+
+  /* ── Legacy Aliases ── */
+  --color-ink: oklch(0.18 0.02 260);
+  --color-charcoal: oklch(0.38 0.03 260);
+  --color-ash: oklch(0.52 0.02 260);
+  --color-mist: oklch(0.80 0.015 260);
+  --color-cloud: oklch(0.94 0.008 260);
+  --color-canvas: oklch(0.98 0.005 260);
+  --color-brand-50: oklch(0.95 0.02 260);
+  --color-brand-100: oklch(0.88 0.06 260);
+  --color-brand-200: oklch(0.82 0.08 260);
+  --color-brand-500: oklch(0.55 0.20 260);
+  --color-brand-600: oklch(0.37 0.18 260);
+  --color-brand-700: oklch(0.30 0.16 260);
+  --color-danger: oklch(0.45 0.20 25);
+
+  /* ── Status Colors ── */
   --color-todo: var(--color-surface-container-highest);
   --color-in-progress: var(--color-primary-container);
   --color-blocked: var(--color-error);
@@ -73,15 +81,16 @@
   --color-approved: var(--color-success);
   --color-rejected: var(--color-error);
 
-  /* Border Radius */
-  --radius-sm: 0.25rem;
-  --radius-md: 0.375rem;
-  --radius-lg: 0.5rem;
-  --radius-xl: 0.75rem;
+  /* ── Border Radius (8px base) ── */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
   --radius-full: 9999px;
 }
 
-/* --- Base Styles --- */
+/* ── Base Styles ── */
 @layer base {
   *,
   *::before,
@@ -100,17 +109,18 @@
 
   body {
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    line-height: 1.6;
+    line-height: 1.5;
     color: var(--color-on-background);
     background-color: var(--color-background);
     min-height: 100vh;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-weight: 600;
-    line-height: 1.3;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-weight: 700;
+    line-height: 1.25;
     color: var(--color-ink);
-    letter-spacing: -0.01em;
+    letter-spacing: -0.02em;
   }
 
   h1 { font-size: 1.75rem; }
@@ -125,37 +135,26 @@
   a {
     color: var(--color-brand-600);
     text-decoration: none;
-    transition: color 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+    transition: color 0.15s cubic-bezier(0.2, 0, 0, 1);
   }
   a:hover {
     color: var(--color-brand-700);
   }
 
-  /* Focus ring — accessible keyboard navigation */
   :focus-visible {
     outline: 2px solid var(--color-brand-500);
     outline-offset: 2px;
     border-radius: var(--radius-sm);
   }
 
-  /* Scrollbar styling */
-  ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: var(--color-mist);
-    border-radius: var(--radius-full);
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: var(--color-ash);
-  }
+  /* ── Scrollbar ── */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--color-mist); border-radius: var(--radius-full); }
+  ::-webkit-scrollbar-thumb:hover { background: var(--color-ash); }
 }
 
-/* --- Utility Classes --- */
+/* ── Utility Classes ── */
 @layer utilities {
   .text-ink { color: var(--color-ink); }
   .text-charcoal { color: var(--color-charcoal); }
@@ -173,37 +172,47 @@
   .border-subtle { border-color: var(--color-cloud); }
   .border-mist { border-color: var(--color-mist); }
 
-  /* Card elevation — via border, not shadows (cleaner) */
+  /* ── Font helpers ── */
+  .font-headline { font-family: 'Inter', system-ui, sans-serif; }
+  .font-body    { font-family: 'Inter', system-ui, sans-serif; }
+  .font-label   { font-family: 'Public Sans', system-ui, sans-serif; }
+
+  /* ── Elevations (border + subtle shadow, no heavy drop) ── */
   .elevation-1 {
-    background: white;
-    border: 1px solid var(--color-cloud);
+    background: var(--color-surface-container-lowest);
+    border: 1px solid var(--color-outline-variant);
     border-radius: var(--radius-lg);
   }
 
   .elevation-2 {
-    background: white;
-    border: 1px solid var(--color-cloud);
+    background: var(--color-surface-container-lowest);
+    border: 1px solid var(--color-outline-variant);
     border-radius: var(--radius-lg);
-    box-shadow: 0 1px 3px oklch(0.15 0.01 250 / 0.06);
+    box-shadow: 0 1px 3px oklch(0.15 0.01 260 / 0.06);
   }
 
-  /* Transition utility */
+  .elevation-3 {
+    background: var(--color-surface-container-lowest);
+    border: 1px solid var(--color-outline-variant);
+    border-radius: var(--radius-xl);
+    box-shadow: 0 2px 8px oklch(0.15 0.01 260 / 0.08),
+                0 1px 2px oklch(0.15 0.01 260 / 0.04);
+  }
+
+  /* ── Transition utility ── */
   .transition-default {
-    transition: all 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+    transition: all 0.15s cubic-bezier(0.2, 0, 0, 1);
   }
 
-  /* Status badge variants */
-  .badge-todo { background: oklch(0.94 0.005 250); color: var(--color-charcoal); }
-  .badge-in-progress { background: oklch(0.92 0.03 250); color: var(--color-brand-700); }
-  .badge-blocked { background: oklch(0.94 0.04 25); color: oklch(0.40 0.14 25); }
-  .badge-done { background: oklch(0.92 0.04 145); color: oklch(0.35 0.12 145); }
-  .badge-submitted { background: oklch(0.92 0.03 250); color: var(--color-brand-700); }
-  .badge-approved { background: oklch(0.92 0.04 145); color: oklch(0.35 0.12 145); }
-  .badge-rejected { background: oklch(0.94 0.04 25); color: oklch(0.40 0.14 25); }
-
-  .badge-low { background: oklch(0.92 0.04 145); color: oklch(0.35 0.12 145); }
-  .badge-medium { background: oklch(0.92 0.04 70); color: oklch(0.40 0.14 70); }
-  .badge-high { background: oklch(0.94 0.04 25); color: oklch(0.40 0.14 25); }
+  /* ── Status badge variants (OKLCH, no gradients) ── */
+  .badge-todo        { background: oklch(0.94 0.005 260); color: var(--color-charcoal); }
+  .badge-in-progress { background: oklch(0.92 0.03 260);  color: var(--color-brand-700); }
+  .badge-blocked     { background: oklch(0.94 0.04 25);   color: oklch(0.40 0.14 25); }
+  .badge-done        { background: oklch(0.92 0.04 155);  color: oklch(0.35 0.12 155); }
+  .badge-submitted   { background: oklch(0.92 0.03 260);  color: var(--color-brand-700); }
+  .badge-approved    { background: oklch(0.92 0.04 155);  color: oklch(0.35 0.12 155); }
+  .badge-rejected    { background: oklch(0.94 0.04 25);   color: oklch(0.40 0.14 25); }
+  .badge-low         { background: oklch(0.92 0.04 155);  color: oklch(0.35 0.12 155); }
+  .badge-medium      { background: oklch(0.92 0.04 70);   color: oklch(0.40 0.14 70); }
+  .badge-high        { background: oklch(0.94 0.04 25);   color: oklch(0.40 0.14 25); }
 }
-
-/* Fonts loaded via index.html */

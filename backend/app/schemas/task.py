@@ -14,8 +14,8 @@ class TaskCreate(BaseModel):
     project_id: int = Field(..., gt=0)
     title: str = Field(..., min_length=1, max_length=255)
     description: Optional[str] = None
-    status: str = Field(default="TO_DO", pattern="^(TO_DO|IN_PROGRESS|BLOCKED|DONE)$")
-    priority: str = Field(default="MEDIUM", pattern="^(LOW|MEDIUM|HIGH)$")
+    status: str = Field(default="TO_DO", pattern="^(TO_DO|IN_PROGRESS|REVIEW|BLOCKED|DONE)$")
+    priority: str = Field(default="MEDIUM", pattern="^(LOW|MEDIUM|HIGH|URGENT)$")
     assignee_id: int = Field(..., gt=0)
     est_hours: Decimal = Field(..., ge=0)
     due_date: Optional[date] = None
@@ -25,8 +25,8 @@ class TaskUpdate(BaseModel):
     """Update task — partial updates allowed."""
     title: Optional[str] = Field(None, min_length=1, max_length=255)
     description: Optional[str] = None
-    status: Optional[str] = Field(None, pattern="^(TO_DO|IN_PROGRESS|BLOCKED|DONE)$")
-    priority: Optional[str] = Field(None, pattern="^(LOW|MEDIUM|HIGH)$")
+    status: Optional[str] = Field(None, pattern="^(TO_DO|IN_PROGRESS|REVIEW|BLOCKED|DONE)$")
+    priority: Optional[str] = Field(None, pattern="^(LOW|MEDIUM|HIGH|URGENT)$")
     assignee_id: Optional[int] = Field(None, gt=0)
     est_hours: Optional[Decimal] = Field(None, ge=0)
     actual_hours: Optional[Decimal] = Field(None, ge=0)
@@ -35,7 +35,7 @@ class TaskUpdate(BaseModel):
 
 class TaskStatusUpdate(BaseModel):
     """Update task status only."""
-    status: str = Field(..., pattern="^(TO_DO|IN_PROGRESS|BLOCKED|DONE)$")
+    status: str = Field(..., pattern="^(TO_DO|IN_PROGRESS|REVIEW|BLOCKED|DONE)$")
     actual_hours: Optional[Decimal] = Field(None, ge=0)
 
 

@@ -1,23 +1,18 @@
-import { Bell, LogOut, User } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import useAuthStore from '../../stores/authStore';
 import { notificationsAPI } from '../../api';
 import toast from 'react-hot-toast';
 
 export default function Header() {
-  const { user, logout } = useAuthStore();
+  const { user } = useAuthStore();
   const [notifOpen, setNotifOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
-  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const notifRef = useRef(null);
-  const userRef = useRef(null);
 
-  // Close menus on outside click
   useEffect(() => {
     const handleClick = (e) => {
       if (notifRef.current && !notifRef.current.contains(e.target)) setNotifOpen(false);
-      if (userRef.current && !userRef.current.contains(e.target)) setUserMenuOpen(false);
     };
     document.addEventListener('mousedown', handleClick);
     return () => document.removeEventListener('mousedown', handleClick);
@@ -38,11 +33,6 @@ export default function Header() {
     const interval = setInterval(fetchNotifications, 5000);
     return () => clearInterval(interval);
   }, []);
-
-  const handleLogout = async () => {
-    await logout();
-    toast.success('Logged out successfully');
-  };
 
   const markAllRead = async () => {
     try {
@@ -67,62 +57,185 @@ export default function Header() {
   };
 
   return (
-    <header className="h-16 bg-surface border-b border-outline-variant flex items-center justify-between px-8 font-body text-base leading-6">
-      <div className="font-bold text-primary tracking-tight truncate hidden sm:block">
-        {user?.roles?.[0] === 'ADMIN' ? 'Admin Console' : 'Project Management'}
+    <header
+      style={{
+        height: '56px',
+        backgroundColor: 'var(--color-surface)',
+        borderBottom: '1px solid var(--color-outline-variant)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '0 24px',
+        fontFamily: "'Inter', sans-serif",
+        flexShrink: 0,
+      }}
+    >
+      {/* Page label */}
+      <div
+        style={{
+          fontWeight: 700,
+          fontSize: '14px',
+          color: 'var(--color-primary)',
+          letterSpacing: '-0.01em',
+          fontFamily: "'Public Sans', sans-serif",
+        }}
+      >
+        {user?.roles?.[0] === 'ADMIN' ? 'Parallax Enterprises' : 'Project Management'}
       </div>
 
-      <div className="flex-1 max-w-md mx-4 sm:mx-8">
-        <div className="relative flex items-center w-full h-10 rounded-full focus-within:shadow-sm bg-surface-container-lowest border border-outline-variant overflow-hidden">
-          <div className="grid place-items-center h-full w-12 text-on-surface-variant">
-            <span className="material-symbols-outlined text-xl">search</span>
+      {/* Search */}
+      <div style={{ flex: 1, maxWidth: '400px', margin: '0 24px' }}>
+        <div
+          style={{
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center',
+            height: '36px',
+            borderRadius: '9999px',
+            backgroundColor: 'var(--color-surface-container-lowest)',
+            border: '1px solid var(--color-outline-variant)',
+            overflow: 'hidden',
+            transition: 'box-shadow 0.15s ease',
+          }}
+        >
+          <div
+            style={{
+              display: 'grid',
+              placeItems: 'center',
+              height: '100%',
+              width: '40px',
+              color: 'var(--color-on-surface-variant)',
+            }}
+          >
+            <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>search</span>
           </div>
-          <input className="peer h-full w-full outline-none text-sm text-on-surface pr-2 bg-transparent" placeholder="Search resources..." type="text" />
+          <input
+            style={{
+              height: '100%',
+              width: '100%',
+              outline: 'none',
+              fontSize: '13px',
+              color: 'var(--color-on-surface)',
+              paddingRight: '12px',
+              backgroundColor: 'transparent',
+              border: 'none',
+              fontFamily: "'Inter', sans-serif",
+            }}
+            placeholder="Search resources..."
+            type="text"
+          />
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
+      {/* Right section */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
         {/* Notifications */}
-        <div className="relative" ref={notifRef}>
+        <div style={{ position: 'relative' }} ref={notifRef}>
           <button
             onClick={() => { setNotifOpen(!notifOpen); if (!notifOpen) fetchNotifications(); }}
-            className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors duration-200 text-on-surface-variant hover:text-on-surface relative"
+            style={{
+              width: '36px',
+              height: '36px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: '9999px',
+              border: 'none',
+              backgroundColor: 'transparent',
+              color: 'var(--color-on-surface-variant)',
+              cursor: 'pointer',
+              transition: 'background-color 0.15s ease',
+              position: 'relative',
+            }}
+            className="header-icon-btn"
           >
-            <span className="material-symbols-outlined">notifications</span>
+            <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>notifications</span>
             {unreadCount > 0 && (
-              <span className="absolute top-1.5 right-1.5 w-4 h-4 flex items-center justify-center text-[10px] font-bold text-on-error rounded-full bg-error">
+              <span
+                style={{
+                  position: 'absolute',
+                  top: '4px',
+                  right: '4px',
+                  width: '16px',
+                  height: '16px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '9px',
+                  fontWeight: 800,
+                  color: 'var(--color-on-error)',
+                  borderRadius: '9999px',
+                  backgroundColor: 'var(--color-error)',
+                }}
+              >
                 {unreadCount > 9 ? '9+' : unreadCount}
               </span>
             )}
           </button>
 
           {notifOpen && (
-            <div className="absolute right-0 top-12 w-80 max-h-96 overflow-y-auto bg-surface-container-lowest rounded-xl border border-outline-variant z-50 shadow-sm">
-              <div className="flex items-center justify-between px-4 py-3 border-b border-outline-variant">
-                <span className="text-sm font-bold text-on-surface font-headline">Notifications</span>
-                <div className="flex items-center gap-3">
+            <div
+              style={{
+                position: 'absolute',
+                right: 0,
+                top: '44px',
+                width: '320px',
+                maxHeight: '384px',
+                overflowY: 'auto',
+                backgroundColor: 'var(--color-surface-container-lowest)',
+                borderRadius: '12px',
+                border: '1px solid var(--color-outline-variant)',
+                zIndex: 50,
+                boxShadow: '0 4px 16px oklch(0.15 0.01 260 / 0.10)',
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '12px 16px',
+                  borderBottom: '1px solid var(--color-outline-variant)',
+                }}
+              >
+                <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--color-on-surface)' }}>
+                  Notifications
+                </span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                   {unreadCount > 0 && (
-                    <button onClick={markAllRead} className="text-xs font-medium text-primary hover:text-primary-container">
+                    <button
+                      onClick={markAllRead}
+                      style={{ fontSize: '11px', fontWeight: 600, color: 'var(--color-primary)', background: 'none', border: 'none', cursor: 'pointer' }}
+                    >
                       Mark all read
                     </button>
                   )}
                   {notifications.length > 0 && (
-                    <button onClick={clearAll} className="text-xs font-medium text-on-surface-variant hover:text-error transition-colors">
-                      Clear All
+                    <button
+                      onClick={clearAll}
+                      style={{ fontSize: '11px', fontWeight: 600, color: 'var(--color-on-surface-variant)', background: 'none', border: 'none', cursor: 'pointer' }}
+                    >
+                      Clear
                     </button>
                   )}
                 </div>
               </div>
               {notifications.length === 0 ? (
-                <p className="px-4 py-8 text-center text-sm text-on-surface-variant">No notifications</p>
+                <p style={{ padding: '32px 16px', textAlign: 'center', fontSize: '13px', color: 'var(--color-on-surface-variant)' }}>
+                  No notifications
+                </p>
               ) : (
                 notifications.slice(0, 10).map((n) => (
                   <div
                     key={n.id}
-                    className={`px-4 py-3 border-b border-outline-variant last:border-b-0 ${n.status === 'UNREAD' ? 'bg-surface-container-high' : ''}`}
+                    style={{
+                      padding: '10px 16px',
+                      borderBottom: '1px solid var(--color-outline-variant)',
+                      backgroundColor: n.status === 'UNREAD' ? 'var(--color-surface-container-high)' : 'transparent',
+                    }}
                   >
-                    <p className="text-sm font-bold text-on-surface">{n.title}</p>
-                    <p className="text-xs mt-0.5 text-on-surface-variant">{n.message}</p>
+                    <p style={{ fontSize: '13px', fontWeight: 600, color: 'var(--color-on-surface)' }}>{n.title}</p>
+                    <p style={{ fontSize: '11px', marginTop: '2px', color: 'var(--color-on-surface-variant)' }}>{n.message}</p>
                   </div>
                 ))
               )}
@@ -130,38 +243,55 @@ export default function Header() {
           )}
         </div>
 
-        {/* User Menu */}
-        <div className="relative" ref={userRef}>
-          <button
-            onClick={() => setUserMenuOpen(!userMenuOpen)}
-            className="flex items-center gap-2 px-1 py-1 rounded-full hover:bg-surface-container-high transition-colors"
+        {/* User avatar */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginLeft: '4px' }}>
+          <div
+            style={{
+              width: '32px',
+              height: '32px',
+              borderRadius: '9999px',
+              backgroundColor: 'var(--color-primary-container)',
+              color: 'var(--color-on-primary-container)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontWeight: 700,
+              fontSize: '12px',
+              fontFamily: "'Inter', sans-serif",
+              letterSpacing: '-0.02em',
+            }}
           >
-            <div className="w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold text-sm">
-              {user?.first_name?.[0]}{user?.last_name?.[0]}
-            </div>
-            <div className="text-left hidden sm:block pr-2">
-              <p className="text-sm font-medium text-on-surface leading-tight">
-                {user?.first_name} {user?.last_name}
-              </p>
-              <p className="text-[10px] text-on-surface-variant font-semibold uppercase tracking-wider leading-tight">
-                {user?.roles?.[0]}
-              </p>
-            </div>
-          </button>
-
-          {userMenuOpen && (
-            <div className="absolute right-0 top-12 w-48 bg-surface-container-lowest rounded-xl border border-outline-variant z-50 shadow-sm overflow-hidden">
-              <button
-                onClick={handleLogout}
-                className="flex items-center gap-2 w-full px-4 py-3 text-sm font-bold text-error hover:bg-surface-container-high transition-colors"
-              >
-                <span className="material-symbols-outlined text-[18px]">logout</span>
-                Sign out
-              </button>
-            </div>
-          )}
+            {user?.first_name?.[0]}{user?.last_name?.[0]}
+          </div>
+          <div style={{ display: 'none' }} className="sm-show">
+            <p style={{ fontSize: '13px', fontWeight: 600, color: 'var(--color-on-surface)', lineHeight: 1.2 }}>
+              {user?.first_name} {user?.last_name}
+            </p>
+            <p
+              style={{
+                fontSize: '10px',
+                color: 'var(--color-on-surface-variant)',
+                fontWeight: 600,
+                textTransform: 'uppercase',
+                letterSpacing: '0.06em',
+                lineHeight: 1.2,
+                fontFamily: "'Public Sans', sans-serif",
+              }}
+            >
+              {user?.roles?.[0]}
+            </p>
+          </div>
         </div>
       </div>
+
+      <style>{`
+        .header-icon-btn:hover {
+          background-color: var(--color-surface-container-high) !important;
+        }
+        @media (min-width: 640px) {
+          .sm-show { display: block !important; }
+        }
+      `}</style>
     </header>
   );
 }

@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Briefcase, CheckSquare, Users, TrendingUp, Download } from 'lucide-react';
 import { reportsAPI, tasksAPI } from '../../api';
 import useAuthStore from '../../stores/authStore';
-import Button from '../../components/ui/Button';
 import Badge from '../../components/ui/Badge';
 import { format } from 'date-fns';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
@@ -57,17 +55,26 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="w-8 h-8 border-3 border-brand-200 border-t-brand-600 rounded-full animate-spin" />
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+        <div
+          style={{
+            width: '32px',
+            height: '32px',
+            border: '3px solid var(--color-outline-variant)',
+            borderTopColor: 'var(--color-primary)',
+            borderRadius: '9999px',
+            animation: 'spin 0.8s linear infinite',
+          }}
+        />
       </div>
     );
   }
 
   const statCards = [
-    { label: 'Total Projects', value: kpis?.total_projects || 0, icon: 'folder', iconColor: 'text-emerald-700 bg-emerald-50', iconBg: 'text-primary bg-surface-container', trend: '+12%', trendIcon: 'trending_up' },
-    { label: 'Tasks Pending', value: kpis?.pending_tasks || 0, icon: 'task_alt', iconColor: 'text-emerald-700 bg-emerald-50', iconBg: 'text-secondary bg-surface-container', trend: '+8.4%', trendIcon: 'trending_up' },
-    { label: 'Active Users', value: kpis?.total_users || 0, icon: 'group', iconColor: 'text-rose-700 bg-rose-50', iconBg: 'text-tertiary bg-surface-container', trend: '-2.1%', trendIcon: 'trending_down' },
-    { label: 'Expenses', value: kpis?.pending_expenses || 0, icon: 'receipt_long', iconColor: 'text-emerald-700 bg-emerald-50', iconBg: 'text-error bg-error-container', trend: '+4.3%', trendIcon: 'trending_up' },
+    { label: 'Total Projects', value: kpis?.total_projects || 0, icon: 'folder', accent: 'oklch(0.55 0.20 260)', accentBg: 'oklch(0.92 0.03 260)', trend: '+12%', trendIcon: 'trending_up', trendColor: 'oklch(0.45 0.14 155)' },
+    { label: 'Tasks Pending', value: kpis?.pending_tasks || 0, icon: 'task_alt', accent: 'oklch(0.48 0.08 260)', accentBg: 'oklch(0.92 0.03 260)', trend: '84%', trendIcon: 'trending_up', trendColor: 'oklch(0.45 0.14 155)', trendLabel: 'completion rate' },
+    { label: 'Active Users', value: kpis?.total_users || 0, icon: 'group', accent: 'oklch(0.48 0.16 45)', accentBg: 'oklch(0.94 0.04 45)', trend: '-3%', trendIcon: 'trending_down', trendColor: 'oklch(0.45 0.20 25)' },
+    { label: 'Pending Expenses', value: kpis?.pending_expenses || 0, icon: 'receipt_long', accent: 'oklch(0.45 0.20 25)', accentBg: 'oklch(0.94 0.04 25)', trend: '+4.3%', trendIcon: 'trending_up', trendColor: 'oklch(0.45 0.14 155)' },
   ];
 
   const handleDownloadReport = () => {
@@ -92,96 +99,240 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="flex flex-col flex-1 h-full">
+    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, height: '100%' }}>
       {/* Page Header */}
-      <div className="mb-8 flex items-center justify-between">
+      <div style={{ marginBottom: '24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div>
-          <h2 className="text-2xl font-headline font-bold tracking-tight text-on-surface">Dashboard Overview</h2>
-          <p className="text-on-surface-variant mt-1 text-sm">Monitor key metrics and recent activity across your organization.</p>
+          <h2
+            style={{
+              fontSize: '22px',
+              fontWeight: 800,
+              letterSpacing: '-0.03em',
+              color: 'var(--color-on-surface)',
+              fontFamily: "'Inter', sans-serif",
+            }}
+          >
+            System Overview
+          </h2>
+          <p
+            style={{
+              color: 'var(--color-on-surface-variant)',
+              marginTop: '4px',
+              fontSize: '13px',
+              fontFamily: "'Public Sans', sans-serif",
+            }}
+          >
+            Real-time enterprise metrics and performance tracking.
+          </p>
         </div>
         {(isManager() || isAdmin()) && (
-          <button onClick={handleDownloadReport} className="bg-primary text-on-primary py-2 px-4 rounded-full font-bold text-sm tracking-wide hover:bg-primary-container transition-colors duration-200 shadow-sm flex items-center justify-center gap-2">
-            <span className="material-symbols-outlined text-[18px]">download</span>
+          <button
+            onClick={handleDownloadReport}
+            style={{
+              backgroundColor: 'var(--color-primary)',
+              color: 'var(--color-on-primary)',
+              padding: '9px 20px',
+              borderRadius: '9999px',
+              fontWeight: 700,
+              fontSize: '13px',
+              letterSpacing: '-0.01em',
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'background-color 0.15s ease',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              fontFamily: "'Inter', sans-serif",
+              boxShadow: '0 1px 2px oklch(0.15 0.01 260 / 0.08)',
+            }}
+            onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-brand-700)'}
+            onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-primary)'}
+          >
+            <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>download</span>
             Export Data
           </button>
         )}
       </div>
 
-      {/* KPI Row (Bento Grid Style) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      {/* KPI Row */}
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+          gap: '16px',
+          marginBottom: '24px',
+        }}
+      >
         {statCards.map((stat, idx) => (
-          <div key={idx} className="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant flex flex-col justify-between hover:shadow-sm transition-shadow duration-200">
-            <div className="flex justify-between items-start mb-4">
-              <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${stat.iconBg}`}>
-                <span className="material-symbols-outlined">{stat.icon}</span>
+          <div
+            key={idx}
+            style={{
+              backgroundColor: 'var(--color-surface-container-lowest)',
+              padding: '20px',
+              borderRadius: '12px',
+              border: '1px solid var(--color-outline-variant)',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              transition: 'box-shadow 0.15s ease',
+              cursor: 'default',
+              minHeight: '120px',
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.boxShadow = '0 2px 8px oklch(0.15 0.01 260 / 0.06)'}
+            onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'none'}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
+              <div
+                style={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '8px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: stat.accentBg,
+                  color: stat.accent,
+                }}
+              >
+                <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>{stat.icon}</span>
               </div>
-              <span className={`flex items-center text-xs font-bold px-2 py-1 rounded-full ${stat.iconColor}`}>
-                <span className="material-symbols-outlined text-[14px] mr-1">{stat.trendIcon}</span>
+              <span
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  fontSize: '11px',
+                  fontWeight: 700,
+                  padding: '3px 8px',
+                  borderRadius: '9999px',
+                  backgroundColor: stat.trendColor === 'oklch(0.45 0.20 25)' ? 'oklch(0.94 0.04 25)' : 'oklch(0.92 0.04 155)',
+                  color: stat.trendColor,
+                  fontFamily: "'Public Sans', sans-serif",
+                  gap: '2px',
+                }}
+              >
+                <span className="material-symbols-outlined" style={{ fontSize: '13px' }}>{stat.trendIcon}</span>
                 {stat.trend}
               </span>
             </div>
             <div>
-              <p className="text-sm font-medium text-on-surface-variant mb-1">{stat.label}</p>
-              <h3 className="text-3xl font-headline font-bold text-on-surface">{stat.value}</h3>
+              <p
+                style={{
+                  fontSize: '12px',
+                  fontWeight: 500,
+                  color: 'var(--color-on-surface-variant)',
+                  marginBottom: '4px',
+                  fontFamily: "'Public Sans', sans-serif",
+                }}
+              >
+                {stat.label}
+              </p>
+              <h3
+                style={{
+                  fontSize: '28px',
+                  fontWeight: 800,
+                  color: 'var(--color-on-surface)',
+                  fontFamily: "'Inter', sans-serif",
+                  letterSpacing: '-0.03em',
+                  lineHeight: 1,
+                }}
+              >
+                {stat.value}
+              </h3>
             </div>
           </div>
         ))}
       </div>
 
       {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '16px', flex: 1 }}>
         
         {/* Chart Section */}
-        <div className="lg:col-span-2 bg-surface-container-lowest border border-outline-variant rounded-xl p-6 flex flex-col hover:shadow-sm transition-shadow duration-200">
-          <div className="flex justify-between items-center mb-6">
+        <div
+          style={{
+            backgroundColor: 'var(--color-surface-container-lowest)',
+            border: '1px solid var(--color-outline-variant)',
+            borderRadius: '12px',
+            padding: '20px',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
             <div>
-              <h3 className="text-lg font-bold text-on-surface font-headline">Task Completion</h3>
-              <p className="text-sm text-on-surface-variant">Last 7 days performance</p>
+              <h3
+                style={{
+                  fontSize: '15px',
+                  fontWeight: 700,
+                  color: 'var(--color-on-surface)',
+                  fontFamily: "'Inter', sans-serif",
+                  letterSpacing: '-0.02em',
+                }}
+              >
+                Task Completion Velocity
+              </h3>
+              <p style={{ fontSize: '12px', color: 'var(--color-on-surface-variant)', fontFamily: "'Public Sans', sans-serif" }}>
+                Weekly throughput and milestone tracking
+              </p>
             </div>
-            <button onClick={handleDownloadReport} className="text-sm font-medium text-primary hover:text-primary-container transition-colors flex items-center gap-1">
-              Export <span className="material-symbols-outlined text-[18px]">download</span>
+            <button
+              onClick={handleDownloadReport}
+              style={{
+                fontSize: '12px',
+                fontWeight: 600,
+                color: 'var(--color-primary)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                fontFamily: "'Inter', sans-serif",
+              }}
+            >
+              Export <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>download</span>
             </button>
           </div>
           
-          <div className="flex-1 min-h-[300px] w-full bg-surface-container-lowest flex items-center justify-center relative overflow-hidden group">
-            <ResponsiveContainer width="100%" height={300}>
+          <div style={{ flex: 1, minHeight: '280px', width: '100%' }}>
+            <ResponsiveContainer width="100%" height={280}>
               <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorCompleted" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#004ac6" stopOpacity={0.2}/>
-                    <stop offset="95%" stopColor="#004ac6" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="oklch(0.37 0.18 260)" stopOpacity={0.15}/>
+                    <stop offset="95%" stopColor="oklch(0.37 0.18 260)" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e1e2ed" />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="oklch(0.90 0.01 260)" />
                 <XAxis 
                   dataKey="name" 
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fill: '#434655', fontSize: 12 }}
+                  tick={{ fill: 'oklch(0.38 0.03 260)', fontSize: 11, fontFamily: "'Public Sans', sans-serif" }}
                   dy={10}
                 />
                 <YAxis 
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fill: '#434655', fontSize: 12 }}
+                  tick={{ fill: 'oklch(0.38 0.03 260)', fontSize: 11, fontFamily: "'Public Sans', sans-serif" }}
                 />
                 <Tooltip 
                   contentStyle={{ 
-                    backgroundColor: '#ffffff',
+                    backgroundColor: 'oklch(1.00 0.00 0)',
                     borderRadius: '8px',
-                    border: '1px solid #e1e2ed',
-                    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05)',
+                    border: '1px solid oklch(0.90 0.01 260)',
+                    boxShadow: '0 4px 12px oklch(0.15 0.01 260 / 0.08)',
                     fontSize: '12px',
                     fontWeight: 600,
-                    color: '#191b23'
+                    color: 'oklch(0.18 0.02 260)',
+                    fontFamily: "'Inter', sans-serif",
                   }}
-                  itemStyle={{ color: '#004ac6' }}
+                  itemStyle={{ color: 'oklch(0.37 0.18 260)' }}
                 />
                 <Area 
                   type="monotone" 
                   dataKey="completed" 
-                  stroke="#004ac6" 
-                  strokeWidth={3}
+                  stroke="oklch(0.37 0.18 260)" 
+                  strokeWidth={2.5}
                   fillOpacity={1} 
                   fill="url(#colorCompleted)" 
                 />
@@ -190,49 +341,142 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Activity Feed */}
-        <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 flex flex-col hover:shadow-sm transition-shadow duration-200">
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="text-lg font-bold text-on-surface font-headline">Recent Tasks</h3>
-            <button className="w-8 h-8 rounded-full hover:bg-surface-container flex items-center justify-center text-on-surface-variant transition-colors">
-              <span className="material-symbols-outlined text-sm">more_horiz</span>
+        {/* Recent Tasks Feed */}
+        <div
+          style={{
+            backgroundColor: 'var(--color-surface-container-lowest)',
+            border: '1px solid var(--color-outline-variant)',
+            borderRadius: '12px',
+            padding: '20px',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+            <h3
+              style={{
+                fontSize: '15px',
+                fontWeight: 700,
+                color: 'var(--color-on-surface)',
+                fontFamily: "'Inter', sans-serif",
+                letterSpacing: '-0.02em',
+              }}
+            >
+              Recent Activity
+            </h3>
+            <button
+              style={{
+                width: '28px',
+                height: '28px',
+                borderRadius: '8px',
+                border: 'none',
+                backgroundColor: 'transparent',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'var(--color-on-surface-variant)',
+              }}
+            >
+              <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>more_horiz</span>
             </button>
           </div>
-          <div className="flex-1 overflow-y-auto pr-2 space-y-6">
+          <div style={{ flex: 1, overflowY: 'auto', paddingRight: '4px' }}>
             {recentTasks.length === 0 ? (
-              <p className="text-center text-on-surface-variant text-sm mt-8">No recent activity.</p>
+              <p style={{ textAlign: 'center', color: 'var(--color-on-surface-variant)', fontSize: '13px', marginTop: '32px' }}>
+                No recent activity.
+              </p>
             ) : (
-              recentTasks.map((task, i) => (
-                <div key={task.id} className="flex gap-4">
-                  <div className="relative flex flex-col items-center">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 z-10 ${
-                      task.status === 'DONE' ? 'bg-secondary-container text-on-secondary-container' : 
-                      task.status === 'IN_PROGRESS' ? 'bg-primary-container text-on-primary-container' :
-                      'bg-surface-variant text-on-surface-variant border border-outline-variant'
-                    }`}>
-                      <span className="material-symbols-outlined text-[16px]">
-                        {task.status === 'DONE' ? 'check_circle' : 
-                         task.status === 'IN_PROGRESS' ? 'autorenew' : 'assignment'}
-                      </span>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                {recentTasks.map((task, i) => (
+                  <div key={task.id} style={{ display: 'flex', gap: '12px' }}>
+                    <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                      <div
+                        style={{
+                          width: '28px',
+                          height: '28px',
+                          borderRadius: '9999px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          flexShrink: 0,
+                          zIndex: 1,
+                          backgroundColor:
+                            task.status === 'DONE' ? 'oklch(0.92 0.04 155)' :
+                            task.status === 'IN_PROGRESS' ? 'oklch(0.92 0.03 260)' :
+                            'var(--color-surface-container-high)',
+                          color:
+                            task.status === 'DONE' ? 'oklch(0.35 0.12 155)' :
+                            task.status === 'IN_PROGRESS' ? 'oklch(0.30 0.16 260)' :
+                            'var(--color-on-surface-variant)',
+                        }}
+                      >
+                        <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>
+                          {task.status === 'DONE' ? 'check_circle' : 
+                           task.status === 'IN_PROGRESS' ? 'autorenew' : 'assignment'}
+                        </span>
+                      </div>
+                      {i !== recentTasks.length - 1 && (
+                        <div
+                          style={{
+                            width: '1px',
+                            height: '100%',
+                            backgroundColor: 'var(--color-outline-variant)',
+                            position: 'absolute',
+                            top: '28px',
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            marginTop: '4px',
+                          }}
+                        />
+                      )}
                     </div>
-                    {i !== recentTasks.length - 1 && (
-                      <div className="w-px h-full bg-outline-variant absolute top-8 left-1/2 -translate-x-1/2 mt-1"></div>
-                    )}
+                    <div style={{ paddingBottom: '4px', flex: 1 }}>
+                      <p style={{ fontSize: '13px', color: 'var(--color-on-surface)', fontWeight: 600 }}>{task.title}</p>
+                      <p style={{ fontSize: '11px', color: 'var(--color-on-surface-variant)', marginTop: '2px' }}>{task.project_name}</p>
+                      <p style={{ fontSize: '11px', color: 'var(--color-outline)', marginTop: '4px', fontFamily: "'Public Sans', sans-serif" }}>
+                        {task.assignee_name || 'Unassigned'} · {format(new Date(task.created_at), 'MMM d, h:mm a')}
+                      </p>
+                    </div>
                   </div>
-                  <div className="pb-2 flex-1">
-                    <p className="text-sm text-on-surface font-medium">{task.title}</p>
-                    <p className="text-xs text-on-surface-variant mt-0.5">{task.project_name}</p>
-                    <p className="text-xs text-outline mt-1">{task.assignee_name || 'Unassigned'} • {format(new Date(task.created_at), 'MMM d, h:mm a')}</p>
-                  </div>
-                </div>
-              ))
+                ))}
+              </div>
             )}
           </div>
-          <button className="w-full mt-4 py-2 text-sm font-medium text-primary hover:bg-surface-container rounded-lg transition-colors border border-transparent hover:border-outline-variant">
+          <button
+            style={{
+              width: '100%',
+              marginTop: '16px',
+              padding: '8px',
+              fontSize: '13px',
+              fontWeight: 600,
+              color: 'var(--color-primary)',
+              backgroundColor: 'transparent',
+              borderRadius: '8px',
+              border: '1px solid transparent',
+              cursor: 'pointer',
+              transition: 'all 0.15s ease',
+              fontFamily: "'Inter', sans-serif",
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.backgroundColor = 'var(--color-surface-container)';
+              e.target.style.borderColor = 'var(--color-outline-variant)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.backgroundColor = 'transparent';
+              e.target.style.borderColor = 'transparent';
+            }}
+          >
             View All Tasks
           </button>
         </div>
       </div>
+
+      <style>{`
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 }

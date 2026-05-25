@@ -1,5 +1,6 @@
 /**
- * Input component — with label, error display, and all 4 states.
+ * Input — with label, error display, and all 4 states.
+ * 8px border-radius, OKLCH focus ring.
  */
 
 export default function Input({
@@ -13,15 +14,20 @@ export default function Input({
   ...props
 }) {
   return (
-    <div className={`flex flex-col gap-1.5 ${className}`}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }} className={className}>
       {label && (
         <label
           htmlFor={id}
-          className="text-sm font-medium"
-          style={{ color: 'var(--color-charcoal)' }}
+          style={{
+            fontSize: '13px',
+            fontWeight: 600,
+            color: 'var(--color-on-surface-variant)',
+            fontFamily: "'Public Sans', sans-serif",
+            letterSpacing: '0.01em',
+          }}
         >
           {label}
-          {required && <span style={{ color: 'var(--color-danger)' }}> *</span>}
+          {required && <span style={{ color: 'var(--color-error)', marginLeft: '2px' }}> *</span>}
         </label>
       )}
       <input
@@ -30,27 +36,34 @@ export default function Input({
         type={type}
         required={required}
         disabled={disabled}
-        className="w-full px-3 py-2.5 text-sm rounded-md border transition-default focus:outline-none"
         style={{
-          borderColor: error ? 'var(--color-danger)' : 'var(--color-mist)',
-          color: disabled ? 'var(--color-ash)' : 'var(--color-ink)',
-          backgroundColor: disabled ? 'var(--color-cloud)' : 'white',
+          width: '100%',
+          padding: '9px 12px',
+          fontSize: '13px',
+          borderRadius: '8px',
+          border: `1px solid ${error ? 'var(--color-error)' : 'var(--color-outline-variant)'}`,
+          color: disabled ? 'var(--color-ash)' : 'var(--color-on-surface)',
+          backgroundColor: disabled ? 'var(--color-surface-container-high)' : 'var(--color-surface-container-lowest)',
           cursor: disabled ? 'not-allowed' : 'text',
+          outline: 'none',
+          transition: 'border-color 0.15s ease, box-shadow 0.15s ease',
+          fontFamily: "'Inter', sans-serif",
+          opacity: disabled ? 0.7 : 1,
         }}
         onFocus={(e) => {
           if (!disabled) {
-            e.target.style.borderColor = 'var(--color-brand-500)';
-            e.target.style.boxShadow = '0 0 0 3px oklch(0.50 0.12 250 / 0.1)';
+            e.target.style.borderColor = 'var(--color-primary)';
+            e.target.style.boxShadow = '0 0 0 3px oklch(0.37 0.18 260 / 0.12)';
           }
         }}
         onBlur={(e) => {
-          e.target.style.borderColor = error ? 'var(--color-danger)' : 'var(--color-mist)';
+          e.target.style.borderColor = error ? 'var(--color-error)' : 'var(--color-outline-variant)';
           e.target.style.boxShadow = 'none';
         }}
         {...props}
       />
       {error && (
-        <p className="text-xs" style={{ color: 'var(--color-danger)' }}>
+        <p style={{ fontSize: '11px', color: 'var(--color-error)', fontWeight: 500 }}>
           {error}
         </p>
       )}

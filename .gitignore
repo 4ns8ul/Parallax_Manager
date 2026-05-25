@@ -1,4 +1,5 @@
 # Python / Backend
+.gitignore
 __pycache__/
 *.py[cod]
 *$py.class
@@ -62,3 +63,7 @@ Thumbs.db
 *.sqlite3
 *.db
 backend/ppet.db
+
+vite.config.js
+seed.py
+.gitignore

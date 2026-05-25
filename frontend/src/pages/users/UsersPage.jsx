@@ -4,8 +4,19 @@ import Badge from '../../components/ui/Badge';
 import Button from '../../components/ui/Button';
 import Modal from '../../components/ui/Modal';
 import Input from '../../components/ui/Input';
-import { Plus, Edit2, Trash2 } from 'lucide-react';
+import { Edit2, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
+
+const selectStyle = {
+  width: '100%', padding: '9px 36px 9px 12px', fontSize: '13px', borderRadius: '8px',
+  border: '1px solid var(--color-outline-variant)', backgroundColor: 'var(--color-surface-container-lowest)',
+  color: 'var(--color-on-surface)', outline: 'none', fontFamily: "'Inter'", appearance: 'none',
+  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23737686' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")`,
+  backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center',
+};
+const labelStyle = { fontSize: '13px', fontWeight: 600, color: 'var(--color-on-surface-variant)', fontFamily: "'Public Sans'" };
+const thStyle = { padding: '10px 20px', fontWeight: 700, fontSize: '12px', color: 'var(--color-on-surface-variant)', fontFamily: "'Public Sans'", letterSpacing: '0.03em', textTransform: 'uppercase', whiteSpace: 'nowrap' };
+const tdStyle = { padding: '14px 20px', fontSize: '13px', whiteSpace: 'nowrap', color: 'var(--color-on-surface)', fontFamily: "'Inter'" };
 
 export default function UsersPage() {
   const [users, setUsers] = useState([]);
@@ -13,235 +24,122 @@ export default function UsersPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [formLoading, setFormLoading] = useState(false);
-
-  // Form State
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [personalEmail, setPersonalEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [roleId, setRoleId] = useState('3'); // Default Employee
+  const [roleId, setRoleId] = useState('3');
   const [status, setStatus] = useState('ACTIVE');
   const [editUserId, setEditUserId] = useState(null);
   const [errorMsg, setErrorMsg] = useState('');
 
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
-  const fetchUsers = async () => {
-    try {
-      const { data } = await usersAPI.list(1, 100);
-      setUsers(data.users || []);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  useEffect(() => { fetchUsers(); }, []);
+  const fetchUsers = async () => { try { const { data } = await usersAPI.list(1, 100); setUsers(data.users || []); } catch (err) { console.error(err); } finally { setLoading(false); } };
 
   const handleCreate = async (e) => {
-    e.preventDefault();
-    setErrorMsg('');
-    if (!email.toLowerCase().endsWith('@prlx.com')) {
-      return setErrorMsg("Only @prlx.com company emails are allowed.");
-    }
-    
+    e.preventDefault(); setErrorMsg('');
+    if (!email.toLowerCase().endsWith('@prlx.com')) return setErrorMsg("Only @prlx.com emails allowed.");
     setFormLoading(true);
     try {
-      await usersAPI.create({
-        first_name: firstName,
-        last_name: lastName,
-        email: email,
-        personal_email: personalEmail,
-        phone_number: phoneNumber || null,
-        role_ids: [parseInt(roleId, 10)],
-      });
-      toast.success("User successfully added! They will receive an email shortly.");
-      setIsModalOpen(false);
-      resetForm();
-      fetchUsers();
-    } catch (err) {
-      setErrorMsg(err.response?.data?.detail || err.response?.data?.message || "Failed to create user");
-    } finally {
-      setFormLoading(false);
-    }
+      await usersAPI.create({ first_name: firstName, last_name: lastName, email, personal_email: personalEmail, phone_number: phoneNumber || null, role_ids: [parseInt(roleId, 10)] });
+      toast.success("User added!"); setIsModalOpen(false); resetForm(); fetchUsers();
+    } catch (err) { setErrorMsg(err.response?.data?.detail || "Failed"); } finally { setFormLoading(false); }
   };
 
   const openEditModal = (user) => {
-    setEditUserId(user.id);
-    setFirstName(user.first_name);
-    setLastName(user.last_name);
-    setPhoneNumber(user.phone_number || '');
-    setStatus(user.status);
-    
-    // Reverse map role to ID (Simplified assuming one role for now)
+    setEditUserId(user.id); setFirstName(user.first_name); setLastName(user.last_name);
+    setPhoneNumber(user.phone_number || ''); setStatus(user.status);
     const role = user.roles[0];
-    if (role === 'ADMIN') setRoleId('1');
-    else if (role === 'MANAGER') setRoleId('2');
-    else setRoleId('3');
-    
-    setErrorMsg('');
-    setIsEditModalOpen(true);
+    if (role === 'ADMIN') setRoleId('1'); else if (role === 'MANAGER') setRoleId('2'); else setRoleId('3');
+    setErrorMsg(''); setIsEditModalOpen(true);
   };
 
   const handleUpdate = async (e) => {
-    e.preventDefault();
-    setFormLoading(true);
+    e.preventDefault(); setFormLoading(true);
     try {
-      await usersAPI.update(editUserId, {
-        first_name: firstName,
-        last_name: lastName,
-        phone_number: phoneNumber || null,
-        role_ids: [parseInt(roleId, 10)],
-        status: status,
-      });
-      toast.success("User updated successfully");
-      setIsEditModalOpen(false);
-      resetForm();
-      fetchUsers();
-    } catch (err) {
-      setErrorMsg(err.response?.data?.detail || err.response?.data?.message || "Failed to update user");
-    } finally {
-      setFormLoading(false);
-    }
+      await usersAPI.update(editUserId, { first_name: firstName, last_name: lastName, phone_number: phoneNumber || null, role_ids: [parseInt(roleId, 10)], status });
+      toast.success("User updated"); setIsEditModalOpen(false); resetForm(); fetchUsers();
+    } catch (err) { setErrorMsg(err.response?.data?.detail || "Failed"); } finally { setFormLoading(false); }
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this user? This cannot be undone.")) return;
-    try {
-      await usersAPI.delete(id);
-      toast.success("User deleted successfully");
-      fetchUsers();
-    } catch (err) {
-      toast.error(err.response?.data?.message || "Failed to delete user");
-    }
+    if (!window.confirm("Delete this user?")) return;
+    try { await usersAPI.delete(id); toast.success("Deleted"); fetchUsers(); } catch (err) { toast.error("Failed"); }
   };
 
-  const resetForm = () => {
-    setFirstName('');
-    setLastName('');
-    setEmail('');
-    setPersonalEmail('');
-    setPhoneNumber('');
-    setRoleId('3');
-    setStatus('ACTIVE');
-    setEditUserId(null);
-  };
+  const resetForm = () => { setFirstName(''); setLastName(''); setEmail(''); setPersonalEmail(''); setPhoneNumber(''); setRoleId('3'); setStatus('ACTIVE'); setEditUserId(null); };
 
   return (
-    <div className="flex flex-col gap-6 max-w-[1200px] mx-auto w-full h-full">
-      <div className="flex items-center justify-between">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: '1200px', margin: '0 auto', width: '100%', height: '100%' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div>
-          <h1 className="text-2xl font-semibold text-ink">System Users</h1>
-          <p className="text-sm text-ash mt-1">Manage roles and platform access</p>
+          <h1 style={{ fontSize: '22px', fontWeight: 800, color: 'var(--color-on-surface)', fontFamily: "'Inter'", letterSpacing: '-0.03em' }}>System Users</h1>
+          <p style={{ fontSize: '13px', color: 'var(--color-on-surface-variant)', marginTop: '4px', fontFamily: "'Public Sans'" }}>Manage roles and platform access</p>
         </div>
         <Button onClick={() => setIsModalOpen(true)}>
-          <Plus size={18} />
-          New User
+          <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>add</span> New User
         </Button>
       </div>
 
-      <div className="bg-white rounded-[12px] border overflow-hidden flex-1" style={{ borderColor: 'var(--color-cloud)' }}>
-        <table className="w-full text-left text-sm whitespace-nowrap">
-          <thead className="bg-canvas border-b" style={{ borderColor: 'var(--color-cloud)' }}>
-            <tr>
-              <th className="px-6 py-3 font-semibold text-charcoal">User</th>
-              <th className="px-6 py-3 font-semibold text-charcoal">Contact Details</th>
-              <th className="px-6 py-3 font-semibold text-charcoal">Role</th>
-              <th className="px-6 py-3 font-semibold text-charcoal">Status</th>
-              <th className="px-6 py-3 font-semibold text-charcoal text-right">Actions</th>
+      <div style={{ backgroundColor: 'var(--color-surface-container-lowest)', borderRadius: '12px', border: '1px solid var(--color-outline-variant)', overflow: 'hidden', flex: 1 }}>
+        <table style={{ width: '100%', textAlign: 'left', borderCollapse: 'collapse' }}>
+          <thead>
+            <tr style={{ backgroundColor: 'var(--color-surface-container)', borderBottom: '1px solid var(--color-outline-variant)' }}>
+              <th style={thStyle}>User</th><th style={thStyle}>Contact</th><th style={thStyle}>Role</th><th style={thStyle}>Status</th><th style={{ ...thStyle, textAlign: 'right' }}>Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y" style={{ divideColor: 'var(--color-cloud)' }}>
+          <tbody>
             {loading ? (
-              <tr><td colSpan={5} className="px-6 py-8 text-center text-ash">Loading...</td></tr>
-            ) : (
-              users.map(u => (
-                <tr key={u.id} className="hover:bg-canvas transition-colors">
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-brand-50 text-brand-700 font-bold text-xs">
-                        {u.first_name[0]}{u.last_name[0]}
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="font-medium text-ink">{u.first_name} {u.last_name}</span>
-                        <span className="text-xs text-ash">{u.email}</span>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex flex-col">
-                      <span className="text-xs text-ink">{u.personal_email || 'No Personal Email'}</span>
-                      <span className="text-xs text-ash">{u.phone_number || 'No Phone Number'}</span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex gap-1">
-                      {u.roles.map(r => (
-                        <span key={r} className="text-[10px] uppercase font-bold text-charcoal bg-cloud px-2 py-0.5 rounded-full">
-                          {r}
-                        </span>
-                      ))}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <Badge variant={u.status === 'ACTIVE' ? 'APPROVED' : (u.status === 'SUSPENDED' ? 'REJECTED' : 'PENDING')}>
-                      {u.status}
-                    </Badge>
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      <button onClick={() => openEditModal(u)} className="p-1.5 text-ash hover:text-brand-600 hover:bg-brand-50 rounded-md transition-colors" title="Edit User">
-                        <Edit2 size={16} />
-                      </button>
-                      <button onClick={() => handleDelete(u.id)} className="p-1.5 text-ash hover:text-danger hover:bg-danger/10 rounded-md transition-colors" title="Delete User">
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            )}
+              <tr><td colSpan={5} style={{ ...tdStyle, textAlign: 'center', padding: '32px' }}>Loading...</td></tr>
+            ) : users.map(u => (
+              <tr key={u.id} style={{ borderBottom: '1px solid var(--color-outline-variant)', transition: 'background-color 0.1s' }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-surface-container)'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
+                <td style={tdStyle}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div style={{ width: '32px', height: '32px', borderRadius: '8px', backgroundColor: 'oklch(0.95 0.02 260)', color: 'var(--color-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '11px', fontFamily: "'Inter'" }}>{u.first_name[0]}{u.last_name[0]}</div>
+                    <div><span style={{ fontWeight: 600 }}>{u.first_name} {u.last_name}</span><br/><span style={{ fontSize: '11px', color: 'var(--color-on-surface-variant)' }}>{u.email}</span></div>
+                  </div>
+                </td>
+                <td style={tdStyle}><span style={{ fontSize: '12px' }}>{u.personal_email || '—'}</span><br/><span style={{ fontSize: '11px', color: 'var(--color-on-surface-variant)' }}>{u.phone_number || '—'}</span></td>
+                <td style={tdStyle}>
+                  <div style={{ display: 'flex', gap: '4px' }}>
+                    {u.roles.map(r => <span key={r} style={{ fontSize: '10px', textTransform: 'uppercase', fontWeight: 800, color: 'var(--color-on-surface-variant)', backgroundColor: 'var(--color-surface-container-high)', padding: '3px 8px', borderRadius: '9999px', fontFamily: "'Public Sans'", letterSpacing: '0.04em' }}>{r}</span>)}
+                  </div>
+                </td>
+                <td style={tdStyle}><Badge variant={u.status === 'ACTIVE' ? 'APPROVED' : (u.status === 'SUSPENDED' ? 'REJECTED' : 'PENDING')}>{u.status}</Badge></td>
+                <td style={{ ...tdStyle, textAlign: 'right' }}>
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '4px' }}>
+                    <button onClick={() => openEditModal(u)} style={{ padding: '6px', color: 'var(--color-on-surface-variant)', borderRadius: '6px', border: 'none', backgroundColor: 'transparent', cursor: 'pointer', display: 'flex' }} title="Edit"><Edit2 size={15} /></button>
+                    <button onClick={() => handleDelete(u.id)} style={{ padding: '6px', color: 'var(--color-on-surface-variant)', borderRadius: '6px', border: 'none', backgroundColor: 'transparent', cursor: 'pointer', display: 'flex' }} title="Delete"><Trash2 size={15} /></button>
+                  </div>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Add New User">
-        <form onSubmit={handleCreate} className="flex flex-col gap-5">
-          {errorMsg && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm font-medium">
-              {errorMsg}
-            </div>
-          )}
-          <div className="grid grid-cols-2 gap-4">
+        <form onSubmit={handleCreate} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          {errorMsg && <div style={{ padding: '12px', backgroundColor: 'var(--color-error-container)', border: '1px solid oklch(0.80 0.08 25)', borderRadius: '8px', color: 'var(--color-on-error-container)', fontSize: '13px', fontWeight: 500 }}>{errorMsg}</div>}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
             <Input id="first_name" label="First Name" value={firstName} onChange={e => setFirstName(e.target.value)} required />
             <Input id="last_name" label="Last Name" value={lastName} onChange={e => setLastName(e.target.value)} required />
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <Input id="email" type="email" label="Company Email (Login)" placeholder="name@prlx.com" value={email} onChange={e => setEmail(e.target.value)} required />
-            <Input id="personal_email" type="email" label="Personal Email (For Password)" placeholder="name@gmail.com" value={personalEmail} onChange={e => setPersonalEmail(e.target.value)} required />
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+            <Input id="email" type="email" label="Company Email" placeholder="name@prlx.com" value={email} onChange={e => setEmail(e.target.value)} required />
+            <Input id="personal_email" type="email" label="Personal Email" placeholder="name@gmail.com" value={personalEmail} onChange={e => setPersonalEmail(e.target.value)} required />
           </div>
-
-          <div className="flex flex-col gap-1.5">
-            <Input id="phone_number" type="tel" label="Phone Number" placeholder="+1 (555) 000-0000" value={phoneNumber} onChange={e => setPhoneNumber(e.target.value)} />
-          </div>
-          
-          <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-charcoal">System Role</label>
-            <select 
-              className="w-full px-3 py-2.5 text-sm rounded-md border bg-white focus:outline-none focus:border-brand-500"
-              style={{ borderColor: 'var(--color-mist)' }}
-              value={roleId}
-              onChange={e => setRoleId(e.target.value)}
-            >
-              <option value="3">Employee (Task Execution, Expense Submission)</option>
-              <option value="2">Manager (Project Oversight, Expense Approvals)</option>
-              <option value="1">System Admin (Full Access)</option>
+          <Input id="phone_number" type="tel" label="Phone Number" placeholder="+1 (555) 000-0000" value={phoneNumber} onChange={e => setPhoneNumber(e.target.value)} />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <label style={labelStyle}>System Role</label>
+            <select style={selectStyle} value={roleId} onChange={e => setRoleId(e.target.value)}>
+              <option value="3">Employee</option><option value="2">Manager</option><option value="1">System Admin</option>
             </select>
           </div>
-
-          <div className="flex justify-end gap-3 pt-4 border-t" style={{ borderColor: 'var(--color-cloud)' }}>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', paddingTop: '16px', borderTop: '1px solid var(--color-outline-variant)' }}>
             <Button variant="secondary" onClick={() => { setIsModalOpen(false); resetForm(); }} disabled={formLoading}>Cancel</Button>
             <Button type="submit" loading={formLoading}>Create User</Button>
           </div>
@@ -249,42 +147,28 @@ export default function UsersPage() {
       </Modal>
 
       <Modal isOpen={isEditModalOpen} onClose={() => { setIsEditModalOpen(false); resetForm(); }} title="Edit User">
-        <form onSubmit={handleUpdate} className="flex flex-col gap-5">
-          {errorMsg && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm font-medium">
-              {errorMsg}
-            </div>
-          )}
-          <div className="grid grid-cols-2 gap-4">
-            <Input id="edit_first_name" label="First Name" value={firstName} onChange={e => setFirstName(e.target.value)} required />
-            <Input id="edit_last_name" label="Last Name" value={lastName} onChange={e => setLastName(e.target.value)} required />
+        <form onSubmit={handleUpdate} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          {errorMsg && <div style={{ padding: '12px', backgroundColor: 'var(--color-error-container)', borderRadius: '8px', color: 'var(--color-on-error-container)', fontSize: '13px' }}>{errorMsg}</div>}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+            <Input id="edit_fn" label="First Name" value={firstName} onChange={e => setFirstName(e.target.value)} required />
+            <Input id="edit_ln" label="Last Name" value={lastName} onChange={e => setLastName(e.target.value)} required />
           </div>
-
-          <div className="flex flex-col gap-1.5">
-            <Input id="edit_phone_number" type="tel" label="Phone Number" placeholder="+1 (555) 000-0000" value={phoneNumber} onChange={e => setPhoneNumber(e.target.value)} />
-          </div>
-          
-          <div className="grid grid-cols-2 gap-4">
-            <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-medium text-charcoal">System Role</label>
-              <select className="w-full px-3 py-2.5 text-sm rounded-md border bg-white focus:outline-none focus:border-brand-500" style={{ borderColor: 'var(--color-mist)' }} value={roleId} onChange={e => setRoleId(e.target.value)}>
-                <option value="3">Employee</option>
-                <option value="2">Manager</option>
-                <option value="1">System Admin</option>
+          <Input id="edit_phone" type="tel" label="Phone Number" value={phoneNumber} onChange={e => setPhoneNumber(e.target.value)} />
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <label style={labelStyle}>System Role</label>
+              <select style={selectStyle} value={roleId} onChange={e => setRoleId(e.target.value)}>
+                <option value="3">Employee</option><option value="2">Manager</option><option value="1">System Admin</option>
               </select>
             </div>
-            
-            <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-medium text-charcoal">Account Status</label>
-              <select className="w-full px-3 py-2.5 text-sm rounded-md border bg-white focus:outline-none focus:border-brand-500" style={{ borderColor: 'var(--color-mist)' }} value={status} onChange={e => setStatus(e.target.value)}>
-                <option value="ACTIVE">Active</option>
-                <option value="SUSPENDED">Suspended</option>
-                <option value="INACTIVE">Inactive</option>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <label style={labelStyle}>Account Status</label>
+              <select style={selectStyle} value={status} onChange={e => setStatus(e.target.value)}>
+                <option value="ACTIVE">Active</option><option value="SUSPENDED">Suspended</option><option value="INACTIVE">Inactive</option>
               </select>
             </div>
           </div>
-
-          <div className="flex justify-end gap-3 pt-4 border-t" style={{ borderColor: 'var(--color-cloud)' }}>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', paddingTop: '16px', borderTop: '1px solid var(--color-outline-variant)' }}>
             <Button variant="secondary" onClick={() => { setIsEditModalOpen(false); resetForm(); }} disabled={formLoading}>Cancel</Button>
             <Button type="submit" loading={formLoading}>Save Changes</Button>
           </div>

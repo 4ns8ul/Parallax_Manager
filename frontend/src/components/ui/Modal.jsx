@@ -22,44 +22,101 @@ export default function Modal({ isOpen, onClose, title, children, size = 'md' })
 
   if (!isOpen) return null;
 
-  const sizes = { sm: 'max-w-md', md: 'max-w-lg', lg: 'max-w-2xl', xl: 'max-w-4xl' };
+  const sizes = { sm: '448px', md: '512px', lg: '640px', xl: '768px' };
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 50,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '16px',
+      }}
       onClick={onClose}
     >
-      <div className="fixed inset-0 bg-black/30" />
+      {/* Overlay */}
       <div
-        className={`relative w-full ${sizes[size]} bg-white rounded-xl border overflow-hidden`}
         style={{
-          borderColor: 'var(--color-cloud)',
-          boxShadow: '0 8px 32px oklch(0.15 0.01 250 / 0.12)',
+          position: 'fixed',
+          inset: 0,
+          backgroundColor: 'oklch(0.15 0.01 260 / 0.35)',
+          backdropFilter: 'blur(2px)',
+        }}
+      />
+
+      {/* Modal content */}
+      <div
+        style={{
+          position: 'relative',
+          width: '100%',
+          maxWidth: sizes[size],
+          backgroundColor: 'var(--color-surface-container-lowest)',
+          borderRadius: '16px',
+          border: '1px solid var(--color-outline-variant)',
+          overflow: 'hidden',
+          boxShadow: '0 16px 48px oklch(0.15 0.01 260 / 0.16), 0 4px 12px oklch(0.15 0.01 260 / 0.06)',
+          animation: 'modalIn 0.2s cubic-bezier(0.2, 0, 0, 1)',
         }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div
-          className="flex items-center justify-between px-6 py-4 border-b"
-          style={{ borderColor: 'var(--color-cloud)' }}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '16px 24px',
+            borderBottom: '1px solid var(--color-outline-variant)',
+          }}
         >
-          <h2 className="text-lg font-semibold" style={{ color: 'var(--color-ink)' }}>
+          <h2
+            style={{
+              fontSize: '16px',
+              fontWeight: 700,
+              color: 'var(--color-on-surface)',
+              fontFamily: "'Inter', sans-serif",
+              letterSpacing: '-0.02em',
+            }}
+          >
             {title}
           </h2>
           <button
             onClick={onClose}
-            className="flex items-center justify-center w-8 h-8 rounded-lg transition-default hover:bg-cloud"
-            style={{ color: 'var(--color-ash)' }}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '32px',
+              height: '32px',
+              borderRadius: '8px',
+              border: 'none',
+              backgroundColor: 'transparent',
+              color: 'var(--color-on-surface-variant)',
+              cursor: 'pointer',
+              transition: 'background-color 0.15s ease',
+            }}
+            onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-surface-container-high)'}
+            onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
           >
             <X size={18} />
           </button>
         </div>
 
         {/* Body */}
-        <div className="px-6 py-5 max-h-[70vh] overflow-y-auto">
+        <div style={{ padding: '20px 24px', maxHeight: '70vh', overflowY: 'auto' }}>
           {children}
         </div>
       </div>
+
+      <style>{`
+        @keyframes modalIn {
+          from { opacity: 0; transform: scale(0.96) translateY(8px); }
+          to   { opacity: 1; transform: scale(1) translateY(0); }
+        }
+      `}</style>
     </div>
   );
 }
